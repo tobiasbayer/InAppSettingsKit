@@ -22,6 +22,6 @@
     IASKTextField *_textField;
 }
 
-@property (nonatomic, assign) IASKTextField *textField;
+@property (nonatomic, strong) IASKTextField *textField;
 
 @end
