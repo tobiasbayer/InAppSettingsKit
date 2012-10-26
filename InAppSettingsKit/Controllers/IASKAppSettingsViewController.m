@@ -419,7 +419,7 @@ CGRect IASKCGRectSwap(CGRect rect);
 	if ((title = [self tableView:tableView titleForHeaderInSection:section])) {
 		CGSize size = [title sizeWithFont:[UIFont boldSystemFontOfSize:[UIFont labelFontSize]] 
 						constrainedToSize:CGSizeMake(tableView.frame.size.width - 2*kIASKHorizontalPaddingGroupTitles, INFINITY)
-							lineBreakMode:UILineBreakModeWordWrap];
+							lineBreakMode:NSLineBreakByWordWrapping];
 		return size.height+kIASKVerticalPaddingGroupTitles;
 	}
 	return 0;
@@ -472,8 +472,8 @@ CGRect IASKCGRectSwap(CGRect rect);
 	} else {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 	}
-	cell.textLabel.minimumFontSize = kIASKMinimumFontSize;
-	cell.detailTextLabel.minimumFontSize = kIASKMinimumFontSize;
+	cell.textLabel.minimumScaleFactor = kIASKMinimumFontSize;
+	cell.detailTextLabel.minimumScaleFactor = kIASKMinimumFontSize;
 	return cell;
 }
 
@@ -650,7 +650,10 @@ CGRect IASKCGRectSwap(CGRect rect);
                 initSelector = @selector(init);
             }
             UIViewController * vc = [vcClass alloc];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
             [vc performSelector:initSelector withObject:[specifier file] withObject:[specifier key]];
+#pragma clang diagnostic pop
 			if ([vc respondsToSelector:@selector(setDelegate:)]) {
 				[vc performSelector:@selector(setDelegate:) withObject:self.delegate];
 			}
@@ -708,7 +711,10 @@ CGRect IASKCGRectSwap(CGRect rect);
 			Class buttonClass = [specifier buttonClass];
 			SEL buttonAction = [specifier buttonAction];
 			if ([buttonClass respondsToSelector:buttonAction]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 				[buttonClass performSelector:buttonAction withObject:self withObject:[specifier key]];
+#pragma clang diagnostic pop
 				NSLog(@"InAppSettingsKit Warning: Using IASKButtonSpecifier without implementing the delegate method is deprecated");
 			}
 		}
@@ -757,7 +763,7 @@ CGRect IASKCGRectSwap(CGRect rect);
             }
             
             mailViewController.mailComposeDelegate = vc;
-            [vc presentModalViewController:mailViewController animated:YES];
+            [vc presentViewController:mailViewController animated:YES completion:nil];
         } else {
             UIAlertView *alert = [[UIAlertView alloc]
                                   initWithTitle:NSLocalizedString(@"Mail not configured", @"InAppSettingsKit")
@@ -790,7 +796,7 @@ CGRect IASKCGRectSwap(CGRect rect);
      }
     
     // NOTE: No error handling is done here
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark -

@@ -71,7 +71,6 @@ hiddenKeys = _hiddenKeys;
 
 - (void)setHiddenKeys:(NSSet *)anHiddenKeys {
 	if (_hiddenKeys != anHiddenKeys) {
-		id old = _hiddenKeys;
 		_hiddenKeys = anHiddenKeys;
 		
 		if (_settingsBundle) {
